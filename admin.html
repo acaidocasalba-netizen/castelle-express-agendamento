@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Castelle Express CEO | Painel</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2d2926;--muted:#756d67;--cream:#f7f3ef;--line:#e6ded7;--white:#fff;--ok:#e7f1e8;--warn:#f6edda;--danger:#f6e3e0}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:"DM Sans",sans-serif}.wrap{width:min(1200px,94%);margin:auto}
+header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:3}.top{height:72px;display:flex;align-items:center;justify-content:space-between}.brand{font:600 22px "Playfair Display"}.brand small{font:700 9px "DM Sans";letter-spacing:.24em;display:block;color:var(--muted)}
+button{border:0;border-radius:12px;padding:11px 15px;font:600 13px "DM Sans";cursor:pointer;background:var(--ink);color:#fff}.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+main{padding:35px 0}.head{display:flex;justify-content:space-between;align-items:end;margin-bottom:24px}.head h1{font:500 42px "Playfair Display";margin:0}.muted{color:var(--muted)}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px}.card b{font-size:28px;display:block}.card span{font-size:12px;color:var(--muted)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}.toolbar input,.toolbar select{padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff;font:13px "DM Sans"}
+.table{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:auto}.row{display:grid;grid-template-columns:1.1fr 1fr 1fr .8fr .8fr 1.4fr;gap:12px;padding:15px 17px;border-bottom:1px solid var(--line);align-items:center;font-size:13px;min-width:900px}.row.headrow{font-weight:700;background:#fbf9f7;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em}.badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:700}.pendente{background:var(--warn)}.confirmado{background:var(--ok)}.cancelado{background:var(--danger)}
+.modal{display:none;position:fixed;inset:0;background:rgba(45,41,38,.45);align-items:center;justify-content:center;padding:20px}.modal.show{display:flex}.modalbox{background:#fff;border-radius:22px;width:min(600px,100%);padding:25px}.modalbox h2{font:500 28px "Playfair Display";margin:0 0 18px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.grid label{font-size:11px;color:var(--muted);font-weight:700}.grid input,.grid select{margin-top:6px;width:100%;padding:12px;border:1px solid var(--line);border-radius:11px}.full{grid-column:1/-1}.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
+.login{min-height:100vh;display:flex;align-items:center;justify-content:center}.loginbox{width:min(420px,92%);background:#fff;border:1px solid var(--line);border-radius:22px;padding:28px}.loginbox h1{font:500 34px "Playfair Display"}.loginbox input{width:100%;padding:13px;margin:7px 0 12px;border:1px solid var(--line);border-radius:11px}
+@media(max-width:800px){.cards{grid-template-columns:1fr 1fr}.head{display:block}.head button{margin-top:15px}}
+</style></head><body>
+<div id="app"></div>
+<div class="modal" id="modal"><div class="modalbox">
+<h2>Editar agendamento</h2><div id="editContent"></div>
+<div class="actions"><button class="ghost" onclick="closeModal()">Cancelar</button><button onclick="saveEdit()">Salvar</button></div>
+</div></div>
+<script>
+const KEY='castelleAppointments';
+const STAFF=['Anita','Cira','Mara','Patrícia'];
+const SERVICES=['Escova','Corte feminino','Hidratação','Manicure','Pedicure','Manicure + Pedicure','Barbearia'];
+let editing=null;
+function get(){return JSON.parse(localStorage.getItem(KEY)||'[]')}
+function set(v){localStorage.setItem(KEY,JSON.stringify(v))}
+function login(){document.getElementById('app').innerHTML=`<div class="login"><div class="loginbox">
+<div class="brand">CASTELLE<small>EXPRESS CEO</small></div><h1>Painel do salão</h1><p class="muted">Acesso administrativo local.</p>
+<label>E-mail</label><input id="email" type="email" placeholder="admin@castelle.com">
+<label>Senha</label><input id="pass" type="password" placeholder="••••••••">
+<button style="width:100%;margin-top:8px" onclick="enter()">Entrar</button>
+<p class="muted" style="font-size:11px;margin-top:14px">Nesta versão demonstrativa, o acesso usa credenciais locais. A versão com Supabase Auth pode substituir este login.</p>
+</div></div>`}
+function enter(){sessionStorage.setItem('castelleAdmin','1');render()}
+function logout(){sessionStorage.removeItem('castelleAdmin');login()}
+function render(){
+ if(sessionStorage.getItem('castelleAdmin')!=='1'){login();return}
+ const data=get(), pending=data.filter(x=>x.status==='pendente').length, confirmed=data.filter(x=>x.status==='confirmado').length, canceled=data.filter(x=>x.status==='cancelado').length;
+ document.getElementById('app').innerHTML=`<header><div class="wrap top"><div class="brand">CASTELLE<small>EXPRESS CEO</small></div><button class="ghost" onclick="logout()">Sair</button></div></header>
+ <main><div class="wrap"><div class="head"><div><div class="muted">GESTÃO DA AGENDA</div><h1>Agendamentos</h1></div><button onclick="newAppointment()">+ Novo agendamento</button></div>
+ <div class="cards"><div class="card"><b>${data.length}</b><span>Total</span></div><div class="card"><b>${pending}</b><span>Pendentes</span></div><div class="card"><b>${confirmed}</b><span>Confirmados</span></div><div class="card"><b>${canceled}</b><span>Cancelados</span></div></div>
+ <div class="toolbar"><input id="search" placeholder="Buscar cliente..." oninput="draw()"><select id="filter" onchange="draw()"><option value="">Todos</option><option>pendente</option><option>confirmado</option><option>cancelado</option></select><button class="ghost" onclick="exportCSV()">Exportar CSV</button></div>
+ <div class="table"><div class="row headrow"><div>Cliente</div><div>Serviço</div><div>Profissional</div><div>Data</div><div>Hora</div><div>Status / ações</div></div><div id="rows"></div></div>
+ </div></main>`;draw()
+}
+function draw(){
+ const q=(document.getElementById('search')?.value||'').toLowerCase(), f=document.getElementById('filter')?.value||'';
+ const data=get().filter(x=>(!q||x.name.toLowerCase().includes(q))&&(!f||x.status===f));
+ const rows=document.getElementById('rows'); if(!rows)return;
+ rows.innerHTML=data.length?data.map(x=>`<div class="row">
+ <div><b>${esc(x.name)}</b><br><span class="muted">${esc(x.phone)}</span></div><div>${esc(x.service)}</div><div>${esc(x.professional)}</div>
+ <div>${x.date.split('-').reverse().join('/')}</div><div>${x.time}</div><div><span class="badge ${x.status}">${x.status}</span>
+ <button class="ghost" style="margin-left:7px" onclick="edit('${x.id||x.createdAt}')">Editar</button>
+ <button style="margin-left:4px" onclick="removeAppt('${x.id||x.createdAt}')">Excluir</button></div></div>`).join(''):`<div style="padding:35px;text-align:center;color:#756d67">Nenhum agendamento encontrado.</div>`
+}
+function esc(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function find(id){return get().findIndex(x=>(x.id||x.createdAt)==id)}
+function edit(id){editing=id;const i=find(id),x=get()[i];document.getElementById('editContent').innerHTML=`<div class="grid">
+<div><label>Nome<input id="e_name" value="${esc(x.name)}"></div><div><label>WhatsApp<input id="e_phone" value="${esc(x.phone)}"></div>
+<div><label>Serviço<select id="e_service">${SERVICES.map(s=>`<option ${s===x.service?'selected':''}>${s}</option>`).join('')}</select></div>
+<div><label>Profissional<select id="e_prof">${STAFF.map(s=>`<option ${s===x.professional?'selected':''}>${s}</option>`).join('')}</select></div>
+<div><label>Data<input id="e_date" type="date" value="${x.date}"></div><div><label>Hora<input id="e_time" type="time" value="${x.time}"></div>
+<div><label>Status<select id="e_status">${['pendente','confirmado','cancelado'].map(s=>`<option ${s===x.status?'selected':''}>${s}</option>`).join('')}</select></div>
+<div class="full"><label>Observação<input id="e_notes" value="${esc(x.notes||'')}"></div></div>`;
+document.getElementById('modal').classList.add('show')}
+function saveEdit(){const a=get(),i=find(editing);a[i]={...a[i],name:e_name.value,phone:e_phone.value,service:e_service.value,professional:e_prof.value,date:e_date.value,time:e_time.value,status:e_status.value,notes:e_notes.value};set(a);closeModal();render()}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+function removeAppt(id){if(confirm('Excluir este agendamento?')){set(get().filter(x=>(x.id||x.createdAt)!=id));render()}}
+function newAppointment(){const now=new Date();const d=now.toISOString().slice(0,10);const t=now.toTimeString().slice(0,5);const x={id:crypto.randomUUID(),name:'Novo cliente',phone:'',service:'Escova',professional:'Anita',date:d,time:t,status:'pendente',notes:''};const a=get();a.unshift(x);set(a);edit(x.id)}
+function exportCSV(){const rows=get();const csv=['cliente,whatsapp,servico,profissional,data,hora,status,observacao',...rows.map(x=>[x.name,x.phone,x.service,x.professional,x.date,x.time,x.status,x.notes||''].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','))].join('\n');const b=new Blob([csv],{type:'text/csv;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='castelle-agendamentos.csv';a.click();URL.revokeObjectURL(u)}
+render();
+</script></body></html>
