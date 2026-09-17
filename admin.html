@@ -897,41 +897,35 @@ function escapeAttr(value) {
 }
 
 
-
 async function changeStatus(
   id,
   status
 ) {
 
-  const {
-    error
-  } = await db
-
-    .from("appointments")
-
-    .update({ status })
-
-    .eq("id", id)
-
-    .eq(
-      "salon_id",
-      member.salon_id
+  const { data, error } =
+    await db.rpc(
+      "update_my_salon_appointment_status",
+      {
+        p_appointment_id: id,
+        p_status: status
+      }
     );
 
+  if (error || data !== true) {
 
-  if (error) {
+    console.error(
+      "Erro ao alterar agendamento:",
+      error
+    );
 
     alert(
       "Não foi possível alterar o agendamento."
     );
 
     return;
-
   }
 
-
   await loadAppointments();
-
 }
 
 
