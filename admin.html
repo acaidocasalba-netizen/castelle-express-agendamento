@@ -290,10 +290,29 @@ select:focus {
 }
 
 .refresh:hover {
-  background: var(--accent-dark);
+  background: var(--accent-
+ }  
+.appointment-date {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 4px;
 }
 
-/* APPOINTMENTS */
+.appointment-time {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -.5px;
+}
+
+.appointment-day {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* APPOINTMENT /*
 
 .appointment {
   background: #fff;
@@ -992,14 +1011,15 @@ function render() {
 
             <div class="meta">
 
-              📅
-              ${formatDate(
-                a.appointment_date
-              )}
-              às
-              ${formatTime(
-                a.starts_at
-              )}
+             <div class="appointment-date">
+  <span class="appointment-time">
+    ${formatTime(a.starts_at)}
+  </span>
+
+  <span class="appointment-day">
+    ${formatDate(a.appointment_date)}
+  </span>
+</div>
 
               <br>
 
