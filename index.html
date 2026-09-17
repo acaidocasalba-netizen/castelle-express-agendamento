@@ -84,31 +84,328 @@
 </main>
 
 <footer><div class="container footer-row"><span>© Castelle Express CEO</span><span>Beleza contemporânea para a sua rotina.</span></div></footer>
+msg=`Olá, Castelle Express CEO! Gostaria de solicitar um agendamento:%0A%0A*Serviço:* ${encodeURIComponent(data.service)}%0A*Profissional:* ${encodeURIComponent(data.professional)}%0A*Data:* ${data.date.split('-').reverse().join('/')}%0A*Horário:* ${data.time}%0A*Nome:* ${
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-const slotsEl=document.getElementById('slots'), dateEl=document.getElementById('date'), form=document.getElementById('bookingForm');
-let selectedSlot='';
-const today=new Date(); today.setMinutes(today.getMinutes()-today.getTimezoneOffset()); dateEl.min=today.toISOString().slice(0,10);
-function buildSlots(){
-  slotsEl.innerHTML=''; selectedSlot='';
-  const d=new Date(dateEl.value+'T12:00:00'); if(!dateEl.value) return;
-  const day=d.getDay(); if(day===0){slotsEl.innerHTML='<small>Fechado aos domingos.</small>';return}
-  const start=9, end=day===6?15:19;
-  for(let h=start;h<end;h++){['00','30'].forEach(m=>{if(h===end-1&&m==='30')return; const b=document.createElement('button'); b.type='button';b.className='slot';b.textContent=`${String(h).padStart(2,'0')}:${m}`;b.onclick=()=>{document.querySelectorAll('.slot').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');selectedSlot=b.textContent;updateSummary()};slotsEl.appendChild(b)})}
+const SUPABASE_URL = "https://gsujjurmxlivhvkdzbaj.supabase.co";
+const SUPABASE_KEY = "sb_publishable_GzNXjs0ZB41S-arMpSVuHw_vezcaedu";
+
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+const serviceEl = document.getElementById("service");
+const professionalEl = document.getElementById("professional");
+const dateEl = document.getElementById("date");
+const slotsEl = document.getElementById("slots");
+const form = document.getElementById("bookingForm");
+
+let services = [];
+let professionals = [];
+let hours = [];
+let selectedSlot = "";
+
+const today = new Date();
+today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+dateEl.min = today.toISOString().slice(0, 10);
+
+async function carregarDados() {
+
+  const [servicos, profissionais, horarios] = await Promise.all([
+
+    db
+      .from("services")
+      .select("id,name,price,duration_minutes")
+      .eq("active", true)
+      .order("name"),
+
+    db
+      .from("professionals")
+      .select("id,name")
+      .eq("active", true)
+      .order("name"),
+
+    db
+      .from("professional_hours")
+      .select("professional_id,weekday,starts_at,ends_at")
+  ]);
+
+  if (servicos.error || profissionais.error || horarios.error) {
+
+    console.error(
+      servicos.error,
+      profissionais.error,
+      horarios.error
+    );
+
+    alert("Não foi possível conectar ao sistema de agendamento.");
+
+    return;
+  }
+
+  services = servicos.data || [];
+  professionals = profissionais.data || [];
+  hours = horarios.data || [];
+
+  serviceEl.innerHTML =
+    '<option value="">Selecione</option>' +
+    services.map(service => `
+      <option value="${service.id}">
+        ${service.name} — R$ ${Number(service.price)
+          .toFixed(2)
+          .replace(".", ",")}
+      </option>
+    `).join("");
+
+  professionalEl.innerHTML =
+    '<option value="">Selecione</option>' +
+    professionals.map(professional => `
+      <option value="${professional.id}">
+        ${professional.name}
+      </option>
+    `).join("");
 }
-function updateSummary(){
- const s=document.getElementById('service').value,p=document.getElementById('professional').value,d=dateEl.value;
- document.getElementById('summaryText').textContent=s&&p&&d&&selectedSlot?`${s} • ${p} • ${d.split('-').reverse().join('/')} às ${selectedSlot}`:'Selecione serviço, profissional, data e horário.';
+
+function minutos(horario) {
+
+  const [h, m] = String(horario)
+    .slice(0, 5)
+    .split(":")
+    .map(Number);
+
+  return h * 60 + m;
 }
-dateEl.addEventListener('change',()=>{buildSlots();updateSummary()}); document.getElementById('service').addEventListener('change',updateSummary);document.getElementById('professional').addEventListener('change',updateSummary);
-form.addEventListener('submit',e=>{
- e.preventDefault(); if(!selectedSlot){alert('Selecione um horário.');return}
- const data={service:service.value,professional:professional.value,date:date.value,time:selectedSlot,name:name.value,phone:phone.value,notes:notes.value,createdAt:new Date().toISOString()};
- const list=JSON.parse(localStorage.getItem('castelleAppointments')||'[]');list.push({...data,status:'pendente'});localStorage.setItem('castelleAppointments',JSON.stringify(list));
- form.style.display='none';document.querySelector('.steps').style.display='none';document.getElementById('success').classList.add('show');
- const msg=`Olá, Castelle Express CEO! Gostaria de solicitar um agendamento:%0A%0A*Serviço:* ${encodeURIComponent(data.service)}%0A*Profissional:* ${encodeURIComponent(data.professional)}%0A*Data:* ${data.date.split('-').reverse().join('/')}%0A*Horário:* ${data.time}%0A*Nome:* ${encodeURIComponent(data.name)}%0A*WhatsApp:* ${encodeURIComponent(data.phone)}${data.notes?`%0A*Observação:* ${encodeURIComponent(data.notes)}`:''}`;
- document.getElementById('successText').textContent=`${data.name}, seu pedido para ${data.date.split('-').reverse().join('/')} às ${data.time} foi registrado neste dispositivo. Para confirmação do salão, envie os dados pelo WhatsApp.`;
- document.getElementById('whatsapp').href=`https://wa.me/5571999999999?text=${msg}`;
+
+function horarioTexto(minutosTotal) {
+
+  const h = Math.floor(minutosTotal / 60);
+  const m = minutosTotal % 60;
+
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+
+function atualizarResumo() {
+
+  const service = services.find(
+    x => String(x.id) === serviceEl.value
+  );
+
+  const professional = professionals.find(
+    x => String(x.id) === professionalEl.value
+  );
+
+  const date = dateEl.value;
+
+  document.getElementById("summaryText").textContent =
+    service &&
+    professional &&
+    date &&
+    selectedSlot
+      ? `${service.name} • ${professional.name} • ${date
+          .split("-")
+          .reverse()
+          .join("/")} às ${selectedSlot}`
+      : "Selecione serviço, profissional, data e horário.";
+}
+
+function gerarHorarios() {
+
+  slotsEl.innerHTML = "";
+  selectedSlot = "";
+
+  const service = services.find(
+    x => String(x.id) === serviceEl.value
+  );
+
+  const professional = professionals.find(
+    x => String(x.id) === professionalEl.value
+  );
+
+  if (!service || !professional || !dateEl.value) {
+
+    atualizarResumo();
+
+    return;
+  }
+
+  const data = new Date(
+    dateEl.value + "T12:00:00"
+  );
+
+  const weekday = data.getDay();
+
+  if (weekday === 0) {
+
+    slotsEl.innerHTML =
+      "<small>O salão está fechado aos domingos.</small>";
+
+    atualizarResumo();
+
+    return;
+  }
+
+  const agenda = hours.find(
+    h =>
+      String(h.professional_id) ===
+        String(professional.id) &&
+      Number(h.weekday) === weekday
+  );
+
+  if (!agenda) {
+
+    slotsEl.innerHTML =
+      "<small>Este profissional não atende nesta data.</small>";
+
+    atualizarResumo();
+
+    return;
+  }
+
+  const inicio = minutos(agenda.starts_at);
+  const fim = minutos(agenda.ends_at);
+  const duracao = Number(service.duration_minutes);
+
+  for (
+    let horario = inicio;
+    horario + duracao <= fim;
+    horario += 30
+  ) {
+
+    const botao = document.createElement("button");
+
+    botao.type = "button";
+    botao.className = "slot";
+    botao.textContent = horarioTexto(horario);
+
+    botao.onclick = () => {
+
+      document
+        .querySelectorAll(".slot")
+        .forEach(x => x.classList.remove("selected"));
+
+      botao.classList.add("selected");
+
+      selectedSlot = botao.textContent;
+
+      atualizarResumo();
+    };
+
+    slotsEl.appendChild(botao);
+  }
+
+  atualizarResumo();
+}
+
+dateEl.addEventListener("change", gerarHorarios);
+
+serviceEl.addEventListener("change", gerarHorarios);
+
+professionalEl.addEventListener("change", gerarHorarios);
+
+form.addEventListener("submit", async event => {
+
+  event.preventDefault();
+
+  if (!selectedSlot) {
+
+    alert("Selecione um horário.");
+
+    return;
+  }
+
+  const service = services.find(
+    x => String(x.id) === serviceEl.value
+  );
+
+  const professional = professionals.find(
+    x => String(x.id) === professionalEl.value
+  );
+
+  const name =
+    document.getElementById("name").value.trim();
+
+  const phone =
+    document.getElementById("phone").value.trim();
+
+  const notes =
+    document.getElementById("notes").value.trim();
+
+  const button =
+    form.querySelector("button[type='submit']");
+
+  button.disabled = true;
+  button.textContent = "Registrando...";
+
+  const { error } = await db.rpc(
+    "create_appointment",
+    {
+      p_service_id: Number(service.id),
+
+      p_professional_id:
+        Number(professional.id),
+
+      p_customer_name: name,
+
+      p_customer_phone: phone,
+
+      p_appointment_date:
+        dateEl.value,
+
+      p_starts_at:
+        selectedSlot + ":00",
+
+      p_notes:
+        notes || null
+    }
+  );
+
+  if (error) {
+
+    console.error(error);
+
+    alert(
+      error.message ||
+      "Não foi possível realizar o agendamento."
+    );
+
+    button.disabled = false;
+    button.textContent =
+      "Solicitar agendamento";
+
+    return;
+  }
+
+  form.style.display = "none";
+
+  document
+    .querySelector(".steps")
+    .style.display = "none";
+
+  document
+    .getElementById("success")
+    .classList.add("show");
+
+  document.getElementById("successText").textContent =
+    `${name}, seu agendamento foi registrado com sucesso para ${dateEl.value
+      .split("-")
+      .reverse()
+      .join("/")} às ${selectedSlot}, com ${professional.name}.`;
+
+  const mensagem =
+    `Olá, Castelle Express CEO!%0A%0A` +
+    `Meu agendamento foi registrado:%0A%0A` +
+    `Serviço: ${encodeURIComponent(service.name)}%0A` +
+    `Profissional: ${encodeURIComponent(professional.name)}%0A` +
+    `Data: ${dateEl.value.split("-").reverse().join("/")}%0A` +
+    `Horário: ${selectedSlot}%0A` +
+    `Nome: ${encodeURIComponent(name)}%0A` +
+    `WhatsApp: ${encodeURIComponent(phone)}`;
+
+  document.getElementById("whatsapp").href =
+    `https://wa.me/5571999999999?text=${mensagem}`;
 });
+
+carregarDados();
 </script>
-</body></html>
