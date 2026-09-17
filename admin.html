@@ -530,8 +530,58 @@ async function login() {
 
 }
 
+async function loadMember() {
 
+  const {
+    data: { user }
+  } = await db.auth.getUser();
 
+  if (!user) {
+    showLogin();
+    return;
+  }
+
+  const {
+    data,
+    error
+  } = await db.rpc("get_my_salon_membership");
+
+  if (error || !data || !data.length) {
+
+    console.error("Erro ao carregar vínculo:", error);
+
+    $("loginBox").classList.add("hidden");
+    $("dashboard").classList.add("hidden");
+    $("noAccess").classList.remove("hidden");
+    $("logoutBtn").classList.remove("hidden");
+
+    return;
+  }
+
+  const salon = data[0];
+
+  member = {
+    id: salon.member_id,
+    salon_id: salon.salon_id,
+    role: salon.role,
+    salons: {
+      id: salon.salon_id,
+      name: salon.salon_name,
+      slug: salon.salon_slug,
+      whatsapp: salon.salon_whatsapp
+    }
+  };
+
+  $("loginBox").classList.add("hidden");
+  $("noAccess").classList.add("hidden");
+  $("dashboard").classList.remove("hidden");
+  $("logoutBtn").classList.remove("hidden");
+
+  $("salonName").textContent =
+    salon.salon_name || "Castelle Express CEO";
+
+  await loadAppointments();
+}
 async function loadMember() {
 
   const {
