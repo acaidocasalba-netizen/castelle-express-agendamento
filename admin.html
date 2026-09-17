@@ -1,75 +1,1103 @@
-<!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Castelle Express CEO | Painel</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
-<style>
-:root{--ink:#2d2926;--muted:#756d67;--cream:#f7f3ef;--line:#e6ded7;--white:#fff;--ok:#e7f1e8;--warn:#f6edda;--danger:#f6e3e0}
-*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:"DM Sans",sans-serif}.wrap{width:min(1200px,94%);margin:auto}
-header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:3}.top{height:72px;display:flex;align-items:center;justify-content:space-between}.brand{font:600 22px "Playfair Display"}.brand small{font:700 9px "DM Sans";letter-spacing:.24em;display:block;color:var(--muted)}
-button{border:0;border-radius:12px;padding:11px 15px;font:600 13px "DM Sans";cursor:pointer;background:var(--ink);color:#fff}.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
-main{padding:35px 0}.head{display:flex;justify-content:space-between;align-items:end;margin-bottom:24px}.head h1{font:500 42px "Playfair Display";margin:0}.muted{color:var(--muted)}
-.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px}.card b{font-size:28px;display:block}.card span{font-size:12px;color:var(--muted)}
-.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}.toolbar input,.toolbar select{padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff;font:13px "DM Sans"}
-.table{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:auto}.row{display:grid;grid-template-columns:1.1fr 1fr 1fr .8fr .8fr 1.4fr;gap:12px;padding:15px 17px;border-bottom:1px solid var(--line);align-items:center;font-size:13px;min-width:900px}.row.headrow{font-weight:700;background:#fbf9f7;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em}.badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:700}.pendente{background:var(--warn)}.confirmado{background:var(--ok)}.cancelado{background:var(--danger)}
-.modal{display:none;position:fixed;inset:0;background:rgba(45,41,38,.45);align-items:center;justify-content:center;padding:20px}.modal.show{display:flex}.modalbox{background:#fff;border-radius:22px;width:min(600px,100%);padding:25px}.modalbox h2{font:500 28px "Playfair Display";margin:0 0 18px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.grid label{font-size:11px;color:var(--muted);font-weight:700}.grid input,.grid select{margin-top:6px;width:100%;padding:12px;border:1px solid var(--line);border-radius:11px}.full{grid-column:1/-1}.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
-.login{min-height:100vh;display:flex;align-items:center;justify-content:center}.loginbox{width:min(420px,92%);background:#fff;border:1px solid var(--line);border-radius:22px;padding:28px}.loginbox h1{font:500 34px "Playfair Display"}.loginbox input{width:100%;padding:13px;margin:7px 0 12px;border:1px solid var(--line);border-radius:11px}
-@media(max-width:800px){.cards{grid-template-columns:1fr 1fr}.head{display:block}.head button{margin-top:15px}}
-</style></head><body>
-<div id="app"></div>
-<div class="modal" id="modal"><div class="modalbox">
-<h2>Editar agendamento</h2><div id="editContent"></div>
-<div class="actions"><button class="ghost" onclick="closeModal()">Cancelar</button><button onclick="saveEdit()">Salvar</button></div>
-</div></div>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Administrativo | Castelle Express CEO</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f6f3ef;
+      color: #302c28;
+    }
+
+    header {
+      background: #fff;
+      border-bottom: 1px solid #e7e0d8;
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: .4px;
+    }
+
+    .sub {
+      font-size: 12px;
+      color: #81776f;
+      margin-top: 4px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 14px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .logout {
+      background: #eee8e1;
+      color: #403a35;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 22px 16px;
+    }
+
+    .login,
+    .panel {
+      background: #fff;
+      border: 1px solid #e7e0d8;
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 5px 20px rgba(50,40,30,.05);
+    }
+
+    .login {
+      max-width: 430px;
+      margin: 45px auto;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin-top: 0;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin: 14px 0 6px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d9d0c7;
+      border-radius: 10px;
+      background: #fff;
+      font-size: 15px;
+    }
+
+    .primary {
+      background: #302c28;
+      color: #fff;
+      width: 100%;
+      margin-top: 18px;
+    }
+
+    .error {
+      color: #a33;
+      font-size: 13px;
+      margin-top: 12px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    .stat {
+      background: #fff;
+      border: 1px solid #e7e0d8;
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .stat b {
+      font-size: 25px;
+      display: block;
+      margin-top: 5px;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr auto;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .refresh {
+      background: #eee8e1;
+    }
+
+    .appointment {
+      background: #fff;
+      border: 1px solid #e7e0d8;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 10px;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .name {
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .meta {
+      font-size: 13px;
+      color: #6f665f;
+      line-height: 1.7;
+      margin-top: 8px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .confirm {
+      background: #e7efe8;
+      color: #24552d;
+    }
+
+    .cancel {
+      background: #f4e3e1;
+      color: #7a2921;
+    }
+
+    .reopen {
+      background: #eee8e1;
+    }
+
+    .badge {
+      font-size: 12px;
+      padding: 6px 9px;
+      border-radius: 20px;
+      white-space: nowrap;
+      background: #eee8e1;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 35px;
+      color: #81776f;
+    }
+
+    @media (max-width: 750px) {
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .filters {
+        grid-template-columns: 1fr;
+      }
+
+      .top {
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+
+  <div>
+    <div class="brand">
+      CASTELLE EXPRESS CEO
+    </div>
+
+    <div class="sub">
+      Painel administrativo
+    </div>
+  </div>
+
+  <button id="logoutBtn" class="logout hidden">
+    Sair
+  </button>
+
+</header>
+
+
+<main>
+
+  <!-- LOGIN -->
+
+  <section id="loginBox" class="login">
+
+    <h2>
+      Acesso administrativo
+    </h2>
+
+    <div class="sub">
+      Entre com o usuário autorizado do salão.
+    </div>
+
+    <label>
+      E-mail
+    </label>
+
+    <input
+      id="email"
+      type="email"
+      autocomplete="username"
+      placeholder="seu@email.com"
+    >
+
+    <label>
+      Senha
+    </label>
+
+    <input
+      id="password"
+      type="password"
+      autocomplete="current-password"
+      placeholder="••••••••"
+    >
+
+    <button id="loginBtn" class="primary">
+      Entrar
+    </button>
+
+    <div id="loginError" class="error"></div>
+
+  </section>
+
+
+  <!-- DASHBOARD -->
+
+  <section id="dashboard" class="hidden">
+
+    <div class="panel">
+
+      <h2 id="salonName">
+        Castelle Express CEO
+      </h2>
+
+      <div class="sub">
+        Gerencie os agendamentos do salão.
+      </div>
+
+    </div>
+
+
+    <!-- ESTATÍSTICAS -->
+
+    <div class="stats">
+
+      <div class="stat">
+        Total
+        <b id="total">0</b>
+      </div>
+
+      <div class="stat">
+        Pendentes
+        <b id="pending">0</b>
+      </div>
+
+      <div class="stat">
+        Confirmados
+        <b id="confirmed">0</b>
+      </div>
+
+      <div class="stat">
+        Cancelados
+        <b id="cancelled">0</b>
+      </div>
+
+    </div>
+
+
+    <!-- FILTROS -->
+
+    <div class="panel">
+
+      <div class="filters">
+
+        <input
+          id="search"
+          placeholder="Buscar cliente ou telefone"
+        >
+
+        <input
+          id="date"
+          type="date"
+        >
+
+        <select id="status">
+
+          <option value="">
+            Todos os status
+          </option>
+
+          <option value="pending">
+            Pendentes
+          </option>
+
+          <option value="confirmed">
+            Confirmados
+          </option>
+
+          <option value="cancelled">
+            Cancelados
+          </option>
+
+        </select>
+
+        <button
+          id="refreshBtn"
+          class="refresh"
+        >
+          Atualizar
+        </button>
+
+      </div>
+
+      <div id="list"></div>
+
+    </div>
+
+  </section>
+
+
+  <!-- SEM ACESSO -->
+
+  <section id="noAccess" class="login hidden">
+
+    <h2>
+      Acesso não vinculado
+    </h2>
+
+    <p>
+      Seu usuário entrou no sistema, mas ainda não foi vinculado ao salão.
+    </p>
+
+    <button
+      id="logoutNoAccess"
+      class="logout"
+    >
+      Sair
+    </button>
+
+  </section>
+
+</main>
+
+
 <script>
-const KEY='castelleAppointments';
-const STAFF=['Anita','Cira','Mara','Patrícia'];
-const SERVICES=['Escova','Corte feminino','Hidratação','Manicure','Pedicure','Manicure + Pedicure','Barbearia'];
-let editing=null;
-function get(){return JSON.parse(localStorage.getItem(KEY)||'[]')}
-function set(v){localStorage.setItem(KEY,JSON.stringify(v))}
-function login(){document.getElementById('app').innerHTML=`<div class="login"><div class="loginbox">
-<div class="brand">CASTELLE<small>EXPRESS CEO</small></div><h1>Painel do salão</h1><p class="muted">Acesso administrativo local.</p>
-<label>E-mail</label><input id="email" type="email" placeholder="admin@castelle.com">
-<label>Senha</label><input id="pass" type="password" placeholder="••••••••">
-<button style="width:100%;margin-top:8px" onclick="enter()">Entrar</button>
-<p class="muted" style="font-size:11px;margin-top:14px">Nesta versão demonstrativa, o acesso usa credenciais locais. A versão com Supabase Auth pode substituir este login.</p>
-</div></div>`}
-function enter(){sessionStorage.setItem('castelleAdmin','1');render()}
-function logout(){sessionStorage.removeItem('castelleAdmin');login()}
-function render(){
- if(sessionStorage.getItem('castelleAdmin')!=='1'){login();return}
- const data=get(), pending=data.filter(x=>x.status==='pendente').length, confirmed=data.filter(x=>x.status==='confirmado').length, canceled=data.filter(x=>x.status==='cancelado').length;
- document.getElementById('app').innerHTML=`<header><div class="wrap top"><div class="brand">CASTELLE<small>EXPRESS CEO</small></div><button class="ghost" onclick="logout()">Sair</button></div></header>
- <main><div class="wrap"><div class="head"><div><div class="muted">GESTÃO DA AGENDA</div><h1>Agendamentos</h1></div><button onclick="newAppointment()">+ Novo agendamento</button></div>
- <div class="cards"><div class="card"><b>${data.length}</b><span>Total</span></div><div class="card"><b>${pending}</b><span>Pendentes</span></div><div class="card"><b>${confirmed}</b><span>Confirmados</span></div><div class="card"><b>${canceled}</b><span>Cancelados</span></div></div>
- <div class="toolbar"><input id="search" placeholder="Buscar cliente..." oninput="draw()"><select id="filter" onchange="draw()"><option value="">Todos</option><option>pendente</option><option>confirmado</option><option>cancelado</option></select><button class="ghost" onclick="exportCSV()">Exportar CSV</button></div>
- <div class="table"><div class="row headrow"><div>Cliente</div><div>Serviço</div><div>Profissional</div><div>Data</div><div>Hora</div><div>Status / ações</div></div><div id="rows"></div></div>
- </div></main>`;draw()
+
+const SUPABASE_URL =
+  "https://gsujjurmxlivhvkdzbaj.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_GzNXjs0ZB41S-arMpSVuHw_vezcaedu";
+
+
+const db =
+  supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+let member = null;
+
+let appointments = [];
+
+
+const $ = id =>
+  document.getElementById(id);
+
+
+
+function statusLabel(status) {
+
+  return {
+    pending: "Pendente",
+    confirmed: "Confirmado",
+    cancelled: "Cancelado"
+  }[status] || status;
+
 }
-function draw(){
- const q=(document.getElementById('search')?.value||'').toLowerCase(), f=document.getElementById('filter')?.value||'';
- const data=get().filter(x=>(!q||x.name.toLowerCase().includes(q))&&(!f||x.status===f));
- const rows=document.getElementById('rows'); if(!rows)return;
- rows.innerHTML=data.length?data.map(x=>`<div class="row">
- <div><b>${esc(x.name)}</b><br><span class="muted">${esc(x.phone)}</span></div><div>${esc(x.service)}</div><div>${esc(x.professional)}</div>
- <div>${x.date.split('-').reverse().join('/')}</div><div>${x.time}</div><div><span class="badge ${x.status}">${x.status}</span>
- <button class="ghost" style="margin-left:7px" onclick="edit('${x.id||x.createdAt}')">Editar</button>
- <button style="margin-left:4px" onclick="removeAppt('${x.id||x.createdAt}')">Excluir</button></div></div>`).join(''):`<div style="padding:35px;text-align:center;color:#756d67">Nenhum agendamento encontrado.</div>`
+
+
+
+function formatDate(date) {
+
+  if (!date) return "";
+
+  const [y, m, d] =
+    date.split("-");
+
+  return `${d}/${m}/${y}`;
+
 }
-function esc(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-function find(id){return get().findIndex(x=>(x.id||x.createdAt)==id)}
-function edit(id){editing=id;const i=find(id),x=get()[i];document.getElementById('editContent').innerHTML=`<div class="grid">
-<div><label>Nome<input id="e_name" value="${esc(x.name)}"></div><div><label>WhatsApp<input id="e_phone" value="${esc(x.phone)}"></div>
-<div><label>Serviço<select id="e_service">${SERVICES.map(s=>`<option ${s===x.service?'selected':''}>${s}</option>`).join('')}</select></div>
-<div><label>Profissional<select id="e_prof">${STAFF.map(s=>`<option ${s===x.professional?'selected':''}>${s}</option>`).join('')}</select></div>
-<div><label>Data<input id="e_date" type="date" value="${x.date}"></div><div><label>Hora<input id="e_time" type="time" value="${x.time}"></div>
-<div><label>Status<select id="e_status">${['pendente','confirmado','cancelado'].map(s=>`<option ${s===x.status?'selected':''}>${s}</option>`).join('')}</select></div>
-<div class="full"><label>Observação<input id="e_notes" value="${esc(x.notes||'')}"></div></div>`;
-document.getElementById('modal').classList.add('show')}
-function saveEdit(){const a=get(),i=find(editing);a[i]={...a[i],name:e_name.value,phone:e_phone.value,service:e_service.value,professional:e_prof.value,date:e_date.value,time:e_time.value,status:e_status.value,notes:e_notes.value};set(a);closeModal();render()}
-function closeModal(){document.getElementById('modal').classList.remove('show')}
-function removeAppt(id){if(confirm('Excluir este agendamento?')){set(get().filter(x=>(x.id||x.createdAt)!=id));render()}}
-function newAppointment(){const now=new Date();const d=now.toISOString().slice(0,10);const t=now.toTimeString().slice(0,5);const x={id:crypto.randomUUID(),name:'Novo cliente',phone:'',service:'Escova',professional:'Anita',date:d,time:t,status:'pendente',notes:''};const a=get();a.unshift(x);set(a);edit(x.id)}
-function exportCSV(){const rows=get();const csv=['cliente,whatsapp,servico,profissional,data,hora,status,observacao',...rows.map(x=>[x.name,x.phone,x.service,x.professional,x.date,x.time,x.status,x.notes||''].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','))].join('\n');const b=new Blob([csv],{type:'text/csv;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='castelle-agendamentos.csv';a.click();URL.revokeObjectURL(u)}
-render();
-</script></body></html>
+
+
+
+function formatTime(time) {
+
+  return time
+    ? time.slice(0, 5)
+    : "";
+
+}
+
+
+
+function whatsapp(phone) {
+
+  const clean =
+    (phone || "")
+      .replace(/\D/g, "");
+
+  if (!clean) return;
+
+  window.open(
+    "https://wa.me/" + clean,
+    "_blank"
+  );
+
+}
+
+
+
+async function login() {
+
+  $("loginError").textContent = "";
+
+  const email =
+    $("email").value.trim();
+
+  const password =
+    $("password").value;
+
+
+  if (!email || !password) {
+
+    $("loginError").textContent =
+      "Informe e-mail e senha.";
+
+    return;
+
+  }
+
+
+  const { error } =
+    await db.auth.signInWithPassword({
+
+      email,
+      password
+
+    });
+
+
+  if (error) {
+
+    $("loginError").textContent =
+      "E-mail ou senha inválidos.";
+
+    return;
+
+  }
+
+
+  await loadMember();
+
+}
+
+
+
+async function loadMember() {
+
+  const {
+    data: { user }
+  } = await db.auth.getUser();
+
+
+  if (!user) {
+
+    showLogin();
+
+    return;
+
+  }
+
+
+  const {
+    data,
+    error
+  } = await db
+
+    .from("salon_members")
+
+    .select(
+      "id,salon_id,role,salons(id,name,slug,whatsapp)"
+    )
+
+    .eq("user_id", user.id)
+
+    .limit(1)
+
+    .maybeSingle();
+
+
+  if (error || !data) {
+
+    $("loginBox")
+      .classList.add("hidden");
+
+    $("dashboard")
+      .classList.add("hidden");
+
+    $("noAccess")
+      .classList.remove("hidden");
+
+    $("logoutBtn")
+      .classList.remove("hidden");
+
+    return;
+
+  }
+
+
+  member = data;
+
+
+  $("loginBox")
+    .classList.add("hidden");
+
+  $("noAccess")
+    .classList.add("hidden");
+
+  $("dashboard")
+    .classList.remove("hidden");
+
+  $("logoutBtn")
+    .classList.remove("hidden");
+
+
+  $("salonName").textContent =
+    data.salons?.name ||
+    "Castelle Express CEO";
+
+
+  await loadAppointments();
+
+}
+
+
+
+async function loadAppointments() {
+
+  $("list").innerHTML =
+    '<div class="empty">Carregando agendamentos...</div>';
+
+
+  let query = db
+
+    .from("appointments")
+
+    .select(`
+
+      id,
+      customer_name,
+      customer_phone,
+      appointment_date,
+      starts_at,
+      duration_minutes,
+      status,
+      notes,
+      created_at,
+      service_id,
+      professional_id,
+
+      services(name,price),
+
+      professionals(name)
+
+    `)
+
+    .eq(
+      "salon_id",
+      member.salon_id
+    )
+
+    .order(
+      "appointment_date",
+      { ascending: true }
+    )
+
+    .order(
+      "starts_at",
+      { ascending: true }
+    );
+
+
+  const date =
+    $("date").value;
+
+  const status =
+    $("status").value;
+
+
+  if (date)
+    query =
+      query.eq(
+        "appointment_date",
+        date
+      );
+
+
+  if (status)
+    query =
+      query.eq(
+        "status",
+        status
+      );
+
+
+  const {
+    data,
+    error
+  } = await query;
+
+
+  if (error) {
+
+    $("list").innerHTML =
+      '<div class="empty">Não foi possível carregar os agendamentos.</div>';
+
+    return;
+
+  }
+
+
+  appointments =
+    data || [];
+
+
+  render();
+
+}
+
+
+
+function render() {
+
+  const search =
+    $("search")
+      .value
+      .trim()
+      .toLowerCase();
+
+
+  const filtered =
+    appointments.filter(a => {
+
+      if (!search)
+        return true;
+
+
+      return (
+
+        (a.customer_name || "")
+          .toLowerCase()
+          .includes(search)
+
+        ||
+
+        (a.customer_phone || "")
+          .toLowerCase()
+          .includes(search)
+
+      );
+
+    });
+
+
+  $("total").textContent =
+    appointments.length;
+
+
+  $("pending").textContent =
+    appointments.filter(
+      a => a.status === "pending"
+    ).length;
+
+
+  $("confirmed").textContent =
+    appointments.filter(
+      a => a.status === "confirmed"
+    ).length;
+
+
+  $("cancelled").textContent =
+    appointments.filter(
+      a => a.status === "cancelled"
+    ).length;
+
+
+  if (!filtered.length) {
+
+    $("list").innerHTML =
+      '<div class="empty">Nenhum agendamento encontrado.</div>';
+
+    return;
+
+  }
+
+
+  $("list").innerHTML =
+
+    filtered.map(a => `
+
+      <div class="appointment">
+
+        <div class="top">
+
+          <div>
+
+            <div class="name">
+
+              ${escapeHtml(
+                a.customer_name ||
+                "Cliente"
+              )}
+
+            </div>
+
+
+            <div class="meta">
+
+              📅
+              ${formatDate(
+                a.appointment_date
+              )}
+              às
+              ${formatTime(
+                a.starts_at
+              )}
+
+              <br>
+
+              💇
+              ${escapeHtml(
+                a.services?.name ||
+                "Serviço"
+              )}
+
+              <br>
+
+              👤
+              ${escapeHtml(
+                a.professionals?.name ||
+                "Profissional"
+              )}
+
+              <br>
+
+              📞
+              ${escapeHtml(
+                a.customer_phone ||
+                "Sem telefone"
+              )}
+
+            </div>
+
+          </div>
+
+
+          <span class="badge">
+
+            ${statusLabel(
+              a.status
+            )}
+
+          </span>
+
+        </div>
+
+
+        <div class="actions">
+
+          ${
+            a.status === "pending"
+
+            ?
+
+            `
+            <button
+              class="confirm"
+              onclick="changeStatus('${a.id}','confirmed')"
+            >
+              ✓ Confirmar
+            </button>
+            `
+
+            :
+
+            ""
+          }
+
+
+          ${
+            a.status !== "cancelled"
+
+            ?
+
+            `
+            <button
+              class="cancel"
+              onclick="changeStatus('${a.id}','cancelled')"
+            >
+              Cancelar
+            </button>
+            `
+
+            :
+
+            ""
+          }
+
+
+          ${
+            a.status === "cancelled"
+
+            ?
+
+            `
+            <button
+              class="reopen"
+              onclick="changeStatus('${a.id}','pending')"
+            >
+              Reabrir
+            </button>
+            `
+
+            :
+
+            ""
+          }
+
+
+          ${
+            a.customer_phone
+
+            ?
+
+            `
+            <button
+              class="reopen"
+              onclick="whatsapp('${escapeAttr(a.customer_phone)}')"
+            >
+              WhatsApp
+            </button>
+            `
+
+            :
+
+            ""
+          }
+
+        </div>
+
+      </div>
+
+    `).join("");
+
+}
+
+
+
+function escapeHtml(value) {
+
+  return String(value)
+    .replace(
+      /[&<>"']/g,
+      c => ({
+
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+
+      }[c])
+    );
+
+}
+
+
+
+function escapeAttr(value) {
+
+  return String(value)
+    .replace(/'/g, "\\'");
+
+}
+
+
+
+async function changeStatus(
+  id,
+  status
+) {
+
+  const {
+    error
+  } = await db
+
+    .from("appointments")
+
+    .update({ status })
+
+    .eq("id", id)
+
+    .eq(
+      "salon_id",
+      member.salon_id
+    );
+
+
+  if (error) {
+
+    alert(
+      "Não foi possível alterar o agendamento."
+    );
+
+    return;
+
+  }
+
+
+  await loadAppointments();
+
+}
+
+
+
+async function logout() {
+
+  await db.auth.signOut();
+
+  showLogin();
+
+}
+
+
+
+function showLogin() {
+
+  member = null;
+
+  appointments = [];
+
+
+  $("dashboard")
+    .classList.add("hidden");
+
+  $("noAccess")
+    .classList.add("hidden");
+
+  $("loginBox")
+    .classList.remove("hidden");
+
+  $("logoutBtn")
+    .classList.add("hidden");
+
+}
+
+
+
+$("loginBtn")
+  .addEventListener(
+    "click",
+    login
+  );
+
+
+$("logoutBtn")
+  .addEventListener(
+    "click",
+    logout
+  );
+
+
+$("logoutNoAccess")
+  .addEventListener(
+    "click",
+    logout
+  );
+
+
+$("refreshBtn")
+  .addEventListener(
+    "click",
+    loadAppointments
+  );
+
+
+$("date")
+  .addEventListener(
+    "change",
+    loadAppointments
+  );
+
+
+$("status")
+  .addEventListener(
+    "change",
+    loadAppointments
+  );
+
+
+$("search")
+  .addEventListener(
+    "input",
+    render
+  );
+
+
+$("password")
+  .addEventListener(
+    "keydown",
+    e => {
+
+      if (e.key === "Enter")
+        login();
+
+    }
+  );
+
+
+loadMember();
+
+</script>
+
+</body>
+</html>
