@@ -7,218 +7,436 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+   <style>
+* {
+  box-sizing: border-box;
+}
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f6f3ef;
-      color: #302c28;
-    }
+:root {
+  --bg: #f5f1ec;
+  --card: #ffffff;
+  --text: #302b27;
+  --muted: #8a8179;
+  --border: #e8e0d8;
+  --accent: #8c7562;
+  --accent-dark: #6f5a49;
+  --soft: #f0e9e2;
+  --green: #2f6841;
+  --green-bg: #e7f1e9;
+  --red: #9a4037;
+  --red-bg: #f8e9e7;
+  --shadow: 0 12px 35px rgba(61, 48, 37, .07);
+}
 
-    header {
-      background: #fff;
-      border-bottom: 1px solid #e7e0d8;
-      padding: 18px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-    }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
 
-    .brand {
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: .4px;
-    }
+/* HEADER */
 
-    .sub {
-      font-size: 12px;
-      color: #81776f;
-      margin-top: 4px;
-    }
+header {
+  background: rgba(255,255,255,.96);
+  border-bottom: 1px solid var(--border);
+  padding: 18px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: blur(12px);
+}
 
-    button {
-      border: 0;
-      border-radius: 10px;
-      padding: 11px 14px;
-      cursor: pointer;
-      font-weight: 600;
-    }
+.brand-area {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
 
-    .logout {
-      background: #eee8e1;
-      color: #403a35;
-    }
+.brand-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--text);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
 
-    main {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 22px 16px;
-    }
+.brand {
+  font-size: 16px;
+  font-weight: 750;
+  letter-spacing: .7px;
+}
 
-    .login,
-    .panel {
-      background: #fff;
-      border: 1px solid #e7e0d8;
-      border-radius: 16px;
-      padding: 22px;
-      box-shadow: 0 5px 20px rgba(50,40,30,.05);
-    }
+.sub {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
 
-    .login {
-      max-width: 430px;
-      margin: 45px auto;
-    }
+button {
+  border: 0;
+  border-radius: 11px;
+  padding: 11px 15px;
+  cursor: pointer;
+  font-weight: 650;
+  font-size: 13px;
+  transition: .2s ease;
+}
 
-    h1,
-    h2,
-    h3 {
-      margin-top: 0;
-    }
+button:hover {
+  transform: translateY(-1px);
+}
 
-    label {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      margin: 14px 0 6px;
-    }
+.logout {
+  background: var(--soft);
+  color: var(--text);
+}
 
-    input,
-    select {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #d9d0c7;
-      border-radius: 10px;
-      background: #fff;
-      font-size: 15px;
-    }
+.logout:hover {
+  background: #e7ded5;
+}
 
-    .primary {
-      background: #302c28;
-      color: #fff;
-      width: 100%;
-      margin-top: 18px;
-    }
+/* MAIN */
 
-    .error {
-      color: #a33;
-      font-size: 13px;
-      margin-top: 12px;
-    }
+main {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 32px 20px 50px;
+}
 
-    .hidden {
-      display: none !important;
-    }
+/* LOGIN */
 
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin: 18px 0;
-    }
+.login,
+.panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+}
 
-    .stat {
-      background: #fff;
-      border: 1px solid #e7e0d8;
-      border-radius: 14px;
-      padding: 16px;
-    }
+.login {
+  max-width: 430px;
+  margin: 65px auto;
+  padding: 30px;
+}
 
-    .stat b {
-      font-size: 25px;
-      display: block;
-      margin-top: 5px;
-    }
+.login h2 {
+  font-size: 24px;
+  margin-bottom: 7px;
+}
 
-    .filters {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr auto;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
+h1,
+h2,
+h3 {
+  margin-top: 0;
+}
 
-    .refresh {
-      background: #eee8e1;
-    }
+label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  margin: 18px 0 7px;
+  color: #554d47;
+}
 
-    .appointment {
-      background: #fff;
-      border: 1px solid #e7e0d8;
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 10px;
-    }
+input,
+select {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid #ddd4cb;
+  border-radius: 11px;
+  background: #fff;
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+  transition: .2s ease;
+}
 
-    .top {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-    }
+input:focus,
+select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(140,117,98,.10);
+}
 
-    .name {
-      font-weight: 700;
-      font-size: 16px;
-    }
+.primary {
+  background: var(--text);
+  color: #fff;
+  width: 100%;
+  margin-top: 20px;
+  padding: 14px;
+}
 
-    .meta {
-      font-size: 13px;
-      color: #6f665f;
-      line-height: 1.7;
-      margin-top: 8px;
-    }
+.primary:hover {
+  background: var(--accent-dark);
+}
 
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 12px;
-    }
+.error {
+  color: var(--red);
+  font-size: 13px;
+  margin-top: 12px;
+}
 
-    .confirm {
-      background: #e7efe8;
-      color: #24552d;
-    }
+.hidden {
+  display: none !important;
+}
 
-    .cancel {
-      background: #f4e3e1;
-      color: #7a2921;
-    }
+/* DASHBOARD HEADER */
 
-    .reopen {
-      background: #eee8e1;
-    }
+#dashboard > .panel:first-child {
+  padding: 25px 27px;
+  margin-bottom: 20px;
+  background:
+    linear-gradient(
+      135deg,
+      #ffffff 0%,
+      #faf7f4 100%
+    );
+}
 
-    .badge {
-      font-size: 12px;
-      padding: 6px 9px;
-      border-radius: 20px;
-      white-space: nowrap;
-      background: #eee8e1;
-    }
+#salonName {
+  font-size: 25px;
+  margin-bottom: 6px;
+  letter-spacing: -.3px;
+}
 
-    .empty {
-      text-align: center;
-      padding: 35px;
-      color: #81776f;
-    }
+/* STATS */
 
-    @media (max-width: 750px) {
-      .stats {
-        grid-template-columns: repeat(2, 1fr);
-      }
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin: 0 0 20px;
+}
 
-      .filters {
-        grid-template-columns: 1fr;
-      }
+.stat {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 17px;
+  padding: 19px;
+  box-shadow: 0 6px 22px rgba(61,48,37,.04);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 650;
+}
 
-      .top {
-        align-items: flex-start;
-      }
-    }
+.stat b {
+  color: var(--text);
+  font-size: 29px;
+  display: block;
+  margin-top: 7px;
+  letter-spacing: -.8px;
+}
+
+/* FILTERS */
+
+#dashboard > .panel:last-child {
+  padding: 20px;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.refresh {
+  background: var(--soft);
+  color: var(--text);
+  padding-left: 18px;
+  padding-right: 18px;
+}
+
+.refresh:hover {
+  background: #e5dcd3;
+}
+
+/* APPOINTMENTS */
+
+.appointment {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 19px;
+  margin-bottom: 11px;
+  transition: .2s ease;
+}
+
+.appointment:hover {
+  box-shadow: 0 8px 25px rgba(61,48,37,.06);
+  border-color: #ddd2c8;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.name {
+  font-weight: 750;
+  font-size: 16px;
+  letter-spacing: -.1px;
+}
+
+.meta {
+  font-size: 13px;
+  color: #756c65;
+  line-height: 1.8;
+  margin-top: 9px;
+}
+
+.badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 7px 11px;
+  border-radius: 30px;
+  white-space: nowrap;
+  background: var(--soft);
+  color: #675b51;
+  height: fit-content;
+}
+
+/* ACTIONS */
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 15px;
+  padding-top: 14px;
+  border-top: 1px solid #f0ebe6;
+}
+
+.confirm {
+  background: var(--green-bg);
+  color: var(--green);
+}
+
+.confirm:hover {
+  background: #dcebe0;
+}
+
+.cancel {
+  background: var(--red-bg);
+  color: var(--red);
+}
+
+.cancel:hover {
+  background: #f1dcd9;
+}
+
+.reopen {
+  background: var(--soft);
+  color: #5f554d;
+}
+
+.reopen:hover {
+  background: #e6ddd4;
+}
+
+/* EMPTY */
+
+.empty {
+  text-align: center;
+  padding: 45px 20px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* MOBILE */
+
+@media (max-width: 750px) {
+
+  header {
+    padding: 15px 16px;
+  }
+
+  main {
+    padding: 22px 13px 40px;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .stat {
+    padding: 16px;
+  }
+
+  .stat b {
+    font-size: 25px;
+  }
+
+  .filters {
+    grid-template-columns: 1fr;
+  }
+
+  #dashboard > .panel:first-child {
+    padding: 21px;
+  }
+
+  #salonName {
+    font-size: 21px;
+  }
+
+  .top {
+    align-items: flex-start;
+  }
+
+  .appointment {
+    padding: 16px;
+  }
+
+  .actions button {
+    flex: 1;
+    min-width: 110px;
+  }
+
+  .login {
+    margin: 35px auto;
+    padding: 24px;
+  }
+}
+
+@media (max-width: 430px) {
+
+  .brand {
+    font-size: 13px;
+  }
+
+  .brand-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .logout {
+    padding: 9px 11px;
+  }
+
+  .stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .badge {
+    font-size: 10px;
+    padding: 6px 8px;
+  }
+}
+</style> 
+      
+    
   </style>
 </head>
 
