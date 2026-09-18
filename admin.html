@@ -276,6 +276,7 @@ select:focus {
 .filters select {
   min-height: 46px;
 }
+
 .date-filter {
   display: flex;
   flex-direction: column;
@@ -294,7 +295,26 @@ select:focus {
 .date-filter input {
   width: 100%;
 }
+.date-input-wrap {
+  position: relative;
+}
 
+.date-input-wrap input {
+  position: relative;
+  z-index: 2;
+  background: transparent;
+}
+
+.date-placeholder {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #a39a92;
+  font-size: 15px;
+  pointer-events: none;
+  z-index: 1;
+}
 .filters input::placeholder {
   color: #a39a92;
 }
@@ -769,11 +789,16 @@ select:focus {
 
         <div class="date-filter">
   <label for="date">DATA</label>
-  <input
-    id="date"
-    type="date"
-    aria-label="Selecionar data"
-  >
+
+  <div class="date-input-wrap">
+    <span class="date-placeholder">Selecionar uma data</span>
+
+    <input
+      id="date"
+      type="date"
+      aria-label="Selecionar data"
+    >
+  </div>
 </div>
 
         <select id="status">
