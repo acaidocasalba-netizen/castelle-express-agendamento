@@ -276,6 +276,24 @@ select:focus {
 .filters select {
   min-height: 46px;
 }
+.date-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.date-filter label {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  color: var(--accent-dark);
+  text-transform: uppercase;
+  padding-left: 3px;
+}
+
+.date-filter input {
+  width: 100%;
+}
 
 .filters input::placeholder {
   color: #a39a92;
@@ -722,11 +740,14 @@ select:focus {
           placeholder="Buscar cliente ou telefone"
         >
 
-        <input
-          id="date"
-          type="date"
-          aria-label="selecionar data"
-        >
+        <div class="date-filter">
+  <label for="date">DATA</label>
+  <input
+    id="date"
+    type="date"
+    aria-label="Selecionar data"
+  >
+</div>
 
         <select id="status">
 
