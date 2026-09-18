@@ -291,7 +291,90 @@ select:focus {
 
 .refresh:hover {
   background: var(--accent-dark);
- }  
+ }
+/* DASHBOARD WELCOME */
+.dashboard-welcome {
+  padding: 26px 28px;
+  margin-bottom: 16px;
+  background:
+    linear-gradient(135deg, #ffffff 0%, #faf7f3 100%);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(45, 38, 33, .05);
+}
+
+.welcome-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.welcome-label {
+  display: inline-block;
+  margin-bottom: 8px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+  color: var(--accent-dark);
+  text-transform: uppercase;
+}
+
+.dashboard-welcome h2 {
+  margin: 0;
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: -.6px;
+  color: var(--text);
+}
+
+.dashboard-welcome .sub {
+  margin-top: 7px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.welcome-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 13px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(255,255,255,.75);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #6f8f72;
+  box-shadow: 0 0 0 4px rgba(111,143,114,.12);
+}
+
+@media (max-width: 700px) {
+  .dashboard-welcome {
+    padding: 21px;
+  }
+
+  .welcome-content {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .dashboard-welcome h2 {
+    font-size: 23px;
+  }
+
+  .welcome-status {
+    align-self: flex-start;
+  }
+}
 .appointment-date {
   display: flex;
   align-items: baseline;
