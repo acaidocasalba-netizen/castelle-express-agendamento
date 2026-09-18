@@ -315,6 +315,11 @@ select:focus {
   pointer-events: none;
   z-index: 1;
 }
+
+.date-input-wrap.has-value .date-placeholder {
+  display: none;
+}
+  
 .filters input::placeholder {
   color: #a39a92;
 }
@@ -1449,6 +1454,19 @@ $("date")
   .addEventListener(
     "change",
     loadAppointments
+  );
+
+$("date")
+  .addEventListener(
+    "change",
+    () => {
+      $("date")
+        .closest(".date-input-wrap")
+        .classList.toggle(
+          "has-value",
+          !!$("date").value
+        );
+    }
   );
 
 
