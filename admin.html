@@ -7,7 +7,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-   <style>
+  <style>
 * {
   box-sizing: border-box;
 }
@@ -190,152 +190,8 @@ select:focus {
   display: none !important;
 }
 
-/* DASHBOARD HEADER */
+/* DASHBOARD */
 
-#dashboard > .panel:first-child {
-  padding: 25px 27px;
-  margin-bottom: 20px;
-  background:
-    linear-gradient(
-      135deg,
-      #ffffff 0%,
-      #faf7f4 100%
-    );
-}
-
-#salonName {
-  font-size: 25px;
-  margin-bottom: 6px;
-  letter-spacing: -.3px;
-}
-
-/* STATS */
-.stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 15px;
-  margin: 0 0 20px;
-}
-
-.stat {
-  position: relative;
-  overflow: hidden;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 20px;
-  box-shadow: 0 8px 25px rgba(61, 48, 37, .05);
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 700;
-  min-height: 105px;
-  transition: .2s ease;
-}
-
-.stat:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(61, 48, 37, .08);
-}
-
-.stat::after {
-  content: "";
-  position: absolute;
-  width: 65px;
-  height: 65px;
-  border-radius: 50%;
-  background: var(--soft);
-  right: -20px;
-  bottom: -22px;
-  opacity: .7;
-}
-
-.stat b {
-  position: relative;
-  z-index: 1;
-  color: var(--text);
-  font-size: 30px;
-  display: block;
-  margin-top: 8px;
-  letter-spacing: -.8px;
-}
-/* FILTERS */
-
-#dashboard > .panel:last-child {
-  padding: 22px;
-}
-
-.filters {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr auto;
-  gap: 11px;
-  margin-bottom: 20px;
-  align-items: center;
-}
-
-.filters input,
-.filters select {
-  min-height: 46px;
-}
-
-.date-filter {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.date-filter label {
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 1.4px;
-  color: var(--accent-dark);
-  text-transform: uppercase;
-  padding-left: 3px;
-}
-
-.date-filter input {
-  width: 100%;
-}
-.date-input-wrap {
-  position: relative;
-}
-
-.date-input-wrap input {
-  position: relative;
-  z-index: 2;
-  background: transparent;
-}
-
-.date-placeholder {
-  position: absolute;
-  left: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #a39a92;
-  font-size: 15px;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.date-input-wrap.has-value .date-placeholder {
-  display: none;
-}
-  
-.filters input::placeholder {
-  color: #a39a92;
-}
-
-.refresh {
-  min-height: 46px;
-  background: var(--text);
-  color: #fff;
-  padding: 0 19px;
-  white-space: nowrap;
-}
-
-.refresh:hover {
-  background: var(--accent-dark);
- }
-/* DASHBOARD WELCOME */
 .dashboard-welcome {
   padding: 26px 28px;
   margin-bottom: 16px;
@@ -399,25 +255,138 @@ select:focus {
   box-shadow: 0 0 0 4px rgba(111,143,114,.12);
 }
 
-@media (max-width: 700px) {
-  .dashboard-welcome {
-    padding: 21px;
-  }
+/* STATS */
 
-  .welcome-content {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .dashboard-welcome h2 {
-    font-size: 23px;
-  }
-
-  .welcome-status {
-    align-self: flex-start;
-  }
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin: 0 0 20px;
 }
+
+.stat {
+  position: relative;
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 8px 25px rgba(61, 48, 37, .05);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  min-height: 105px;
+  transition: .2s ease;
+}
+
+.stat:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(61, 48, 37, .08);
+}
+
+.stat::after {
+  content: "";
+  position: absolute;
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  background: var(--soft);
+  right: -20px;
+  bottom: -22px;
+  opacity: .7;
+}
+
+.stat b {
+  position: relative;
+  z-index: 1;
+  color: var(--text);
+  font-size: 30px;
+  display: block;
+  margin-top: 8px;
+  letter-spacing: -.8px;
+}
+
+/* FILTERS */
+
+#dashboard > .panel:last-child {
+  padding: 22px;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  gap: 11px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.filters input,
+.filters select {
+  min-height: 46px;
+}
+
+.date-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.date-filter label {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  color: var(--accent-dark);
+  text-transform: uppercase;
+  padding-left: 3px;
+}
+
+.date-filter input {
+  width: 100%;
+}
+
+.date-input-wrap {
+  position: relative;
+}
+
+.date-input-wrap input {
+  position: relative;
+  z-index: 2;
+  background: transparent;
+}
+
+.date-placeholder {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #a39a92;
+  font-size: 15px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.date-input-wrap.has-value .date-placeholder {
+  display: none;
+}
+
+.filters input::placeholder {
+  color: #a39a92;
+}
+
+.refresh {
+  min-height: 46px;
+  background: var(--text);
+  color: #fff;
+  padding: 0 19px;
+  white-space: nowrap;
+}
+
+.refresh:hover {
+  background: var(--accent-dark);
+}
+
+/* APPOINTMENT DATE */
+
 .appointment-date {
   display: flex;
   align-items: baseline;
@@ -469,7 +438,7 @@ select:focus {
   letter-spacing: -.2px;
   color: var(--text);
 }
-     
+
 .appointment .name {
   font-size: 19px;
   font-weight: 800;
@@ -515,7 +484,6 @@ select:focus {
   height: fit-content;
   border: 1px solid #e5dbd2;
 }
-
 
 /* ACTIONS */
 
@@ -612,14 +580,6 @@ select:focus {
     grid-template-columns: 1fr;
   }
 
-  #dashboard > .panel:first-child {
-    padding: 21px;
-  }
-
-  #salonName {
-    font-size: 21px;
-  }
-
   .top {
     align-items: flex-start;
   }
@@ -636,6 +596,24 @@ select:focus {
   .login {
     margin: 35px auto;
     padding: 24px;
+  }
+
+  .dashboard-welcome {
+    padding: 21px;
+  }
+
+  .welcome-content {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .dashboard-welcome h2 {
+    font-size: 23px;
+  }
+
+  .welcome-status {
+    align-self: flex-start;
   }
 }
 
@@ -663,13 +641,11 @@ select:focus {
     padding: 6px 8px;
   }
 }
-</style> 
-      
-    
-  
+  </style>
 </head>
 
 <body>
+
 <header>
 
   <div class="brand-area">
@@ -695,7 +671,6 @@ select:focus {
   </button>
 
 </header>
-
 
 <main>
 
@@ -741,37 +716,41 @@ select:focus {
 
   </section>
 
-
   <!-- DASHBOARD -->
 
   <section id="dashboard" class="hidden">
 
     <div class="panel dashboard-welcome">
 
-  <div class="welcome-content">
+      <div class="welcome-content">
 
-    <div>
-      <div class="welcome-label">
-        PAINEL DO SALÃO
+        <div>
+
+          <div class="welcome-label">
+            PAINEL DO SALÃO
+          </div>
+
+          <h2 id="salonName">
+            Castelle Express CEO
+          </h2>
+
+          <div class="sub">
+            Acompanhe os agendamentos e a rotina do salão.
+          </div>
+
+        </div>
+
+        <div class="welcome-status">
+
+          <span class="status-dot"></span>
+
+          Sistema online
+
+        </div>
+
       </div>
 
-      <h2 id="salonName">
-        Castelle Express CEO
-      </h2>
-
-      <div class="sub">
-        Acompanhe os agendamentos e a rotina do salão.
-      </div>
     </div>
-
-    <div class="welcome-status">
-      <span class="status-dot"></span>
-      Sistema online
-    </div>
-
-  </div>
-
-</div>
 
     <!-- ESTATÍSTICAS -->
 
@@ -799,7 +778,6 @@ select:focus {
 
     </div>
 
-
     <!-- FILTROS -->
 
     <div class="panel">
@@ -812,18 +790,26 @@ select:focus {
         >
 
         <div class="date-filter">
-  <label for="date">DATA</label>
 
-  <div class="date-input-wrap">
-    <span class="date-placeholder">Selecionar uma data</span>
+          <label for="date">
+            DATA
+          </label>
 
-    <input
-      id="date"
-      type="date"
-      aria-label="Selecionar data"
-    >
-  </div>
-</div>
+          <div class="date-input-wrap">
+
+            <span class="date-placeholder">
+              Selecionar uma data
+            </span>
+
+            <input
+              id="date"
+              type="date"
+              aria-label="Selecionar data"
+            >
+
+          </div>
+
+        </div>
 
         <select id="status">
 
@@ -860,7 +846,6 @@ select:focus {
 
   </section>
 
-
   <!-- SEM ACESSO -->
 
   <section id="noAccess" class="login hidden">
@@ -884,7 +869,6 @@ select:focus {
 
 </main>
 
-
 <script>
 
 const SUPABASE_URL =
@@ -893,23 +877,17 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
   "sb_publishable_GzNXjs0ZB41S-arMpSVuHw_vezcaedu";
 
-
 const db =
   supabase.createClient(
     SUPABASE_URL,
     SUPABASE_KEY
   );
 
-
 let member = null;
-
 let appointments = [];
-
 
 const $ = id =>
   document.getElementById(id);
-
-
 
 function statusLabel(status) {
 
@@ -920,8 +898,6 @@ function statusLabel(status) {
   }[status] || status;
 
 }
-
-
 
 function formatDate(date) {
 
@@ -934,8 +910,6 @@ function formatDate(date) {
 
 }
 
-
-
 function formatTime(time) {
 
   return time
@@ -943,8 +917,6 @@ function formatTime(time) {
     : "";
 
 }
-
-
 
 function whatsapp(phone) {
 
@@ -961,8 +933,6 @@ function whatsapp(phone) {
 
 }
 
-
-
 async function login() {
 
   $("loginError").textContent = "";
@@ -973,7 +943,6 @@ async function login() {
   const password =
     $("password").value;
 
-
   if (!email || !password) {
 
     $("loginError").textContent =
@@ -983,7 +952,6 @@ async function login() {
 
   }
 
-
   const { error } =
     await db.auth.signInWithPassword({
 
@@ -991,7 +959,6 @@ async function login() {
       password
 
     });
-
 
   if (error) {
 
@@ -1001,7 +968,6 @@ async function login() {
     return;
 
   }
-
 
   await loadMember();
 
@@ -1014,61 +980,90 @@ async function loadMember() {
   } = await db.auth.getUser();
 
   if (!user) {
+
     showLogin();
+
     return;
+
   }
 
   const {
     data,
     error
-  } = await db.rpc("get_my_salon_membership");
+  } = await db.rpc(
+    "get_my_salon_membership"
+  );
 
   if (error || !data || !data.length) {
 
-    console.error("Erro ao carregar vínculo:", error);
+    console.error(
+      "Erro ao carregar vínculo:",
+      error
+    );
 
     $("loginBox").classList.add("hidden");
+
     $("dashboard").classList.add("hidden");
+
     $("noAccess").classList.remove("hidden");
+
     $("logoutBtn").classList.remove("hidden");
 
     return;
+
   }
 
   const salon = data[0];
 
   member = {
+
     id: salon.member_id,
+
     salon_id: salon.salon_id,
+
     role: salon.role,
+
     salons: {
+
       id: salon.salon_id,
+
       name: salon.salon_name,
+
       slug: salon.salon_slug,
+
       whatsapp: salon.salon_whatsapp
+
     }
+
   };
 
   $("loginBox").classList.add("hidden");
+
   $("noAccess").classList.add("hidden");
+
   $("dashboard").classList.remove("hidden");
+
   $("logoutBtn").classList.remove("hidden");
 
   $("salonName").textContent =
-    salon.salon_name || "Castelle Express CEO";
+    salon.salon_name ||
+    "Castelle Express CEO";
 
   await loadAppointments();
+
 }
-
-
 
 async function loadAppointments() {
 
   $("list").innerHTML =
     '<div class="empty">Carregando agendamentos...</div>';
 
-  const { data, error } =
-    await db.rpc("get_my_salon_appointments");
+  const {
+    data,
+    error
+  } = await db.rpc(
+    "get_my_salon_appointments"
+  );
 
   if (error) {
 
@@ -1081,18 +1076,29 @@ async function loadAppointments() {
       '<div class="empty">Não foi possível carregar os agendamentos.</div>';
 
     return;
+
   }
 
-  appointments = (data || []).map(a => ({
-    ...a,
-    services: {
-      name: a.service_name,
-      price: a.service_price
-    },
-    professionals: {
-      name: a.professional_name
-    }
-  }));
+  appointments =
+    (data || []).map(a => ({
+
+      ...a,
+
+      services: {
+
+        name: a.service_name,
+
+        price: a.service_price
+
+      },
+
+      professionals: {
+
+        name: a.professional_name
+
+      }
+
+    }));
 
   const date =
     $("date").value;
@@ -1101,23 +1107,28 @@ async function loadAppointments() {
     $("status").value;
 
   if (date) {
+
     appointments =
       appointments.filter(
-        a => a.appointment_date === date
+        a =>
+          a.appointment_date === date
       );
+
   }
 
   if (status) {
+
     appointments =
       appointments.filter(
-        a => a.status === status
+        a =>
+          a.status === status
       );
+
   }
 
   render();
+
 }
-
-
 
 function render() {
 
@@ -1127,13 +1138,11 @@ function render() {
       .trim()
       .toLowerCase();
 
-
   const filtered =
     appointments.filter(a => {
 
       if (!search)
         return true;
-
 
       return (
 
@@ -1151,28 +1160,23 @@ function render() {
 
     });
 
-
   $("total").textContent =
     appointments.length;
-
 
   $("pending").textContent =
     appointments.filter(
       a => a.status === "pending"
     ).length;
 
-
   $("confirmed").textContent =
     appointments.filter(
       a => a.status === "confirmed"
     ).length;
 
-
   $("cancelled").textContent =
     appointments.filter(
       a => a.status === "cancelled"
     ).length;
-
 
   if (!filtered.length) {
 
@@ -1182,7 +1186,6 @@ function render() {
     return;
 
   }
-
 
   $("list").innerHTML =
 
@@ -1203,18 +1206,27 @@ function render() {
 
             </div>
 
-
             <div class="meta">
 
-             <div class="appointment-date">
-  <span class="appointment-time">
-    ${formatTime(a.starts_at)}
-  </span>
+              <div class="appointment-date">
 
-  <span class="appointment-day">
-    ${formatDate(a.appointment_date)}
-  </span>
-</div>
+                <span class="appointment-time">
+
+                  ${formatTime(
+                    a.starts_at
+                  )}
+
+                </span>
+
+                <span class="appointment-day">
+
+                  ${formatDate(
+                    a.appointment_date
+                  )}
+
+                </span>
+
+              </div>
 
               <br>
 
@@ -1244,7 +1256,6 @@ function render() {
 
           </div>
 
-
           <span class="badge">
 
             ${statusLabel(
@@ -1254,7 +1265,6 @@ function render() {
           </span>
 
         </div>
-
 
         <div class="actions">
 
@@ -1277,7 +1287,6 @@ function render() {
             ""
           }
 
-
           ${
             a.status !== "cancelled"
 
@@ -1297,7 +1306,6 @@ function render() {
             ""
           }
 
-
           ${
             a.status === "cancelled"
 
@@ -1316,7 +1324,6 @@ function render() {
 
             ""
           }
-
 
           ${
             a.customer_phone
@@ -1345,8 +1352,6 @@ function render() {
 
 }
 
-
-
 function escapeHtml(value) {
 
   return String(value)
@@ -1365,8 +1370,6 @@ function escapeHtml(value) {
 
 }
 
-
-
 function escapeAttr(value) {
 
   return String(value)
@@ -1374,20 +1377,21 @@ function escapeAttr(value) {
 
 }
 
-
 async function changeStatus(
   id,
   status
 ) {
 
-  const { data, error } =
-    await db.rpc(
-      "update_my_salon_appointment_status",
-      {
-        p_appointment_id: id,
-        p_status: status
-      }
-    );
+  const {
+    data,
+    error
+  } = await db.rpc(
+    "update_my_salon_appointment_status",
+    {
+      p_appointment_id: id,
+      p_status: status
+    }
+  );
 
   if (error || data !== true) {
 
@@ -1401,12 +1405,12 @@ async function changeStatus(
     );
 
     return;
+
   }
 
   await loadAppointments();
+
 }
-
-
 
 async function logout() {
 
@@ -1416,14 +1420,11 @@ async function logout() {
 
 }
 
-
-
 function showLogin() {
 
   member = null;
 
   appointments = [];
-
 
   $("dashboard")
     .classList.add("hidden");
@@ -1439,14 +1440,11 @@ function showLogin() {
 
 }
 
-
-
 $("loginBtn")
   .addEventListener(
     "click",
     login
   );
-
 
 $("logoutBtn")
   .addEventListener(
@@ -1454,20 +1452,17 @@ $("logoutBtn")
     logout
   );
 
-
 $("logoutNoAccess")
   .addEventListener(
     "click",
     logout
   );
 
-
 $("refreshBtn")
   .addEventListener(
     "click",
     loadAppointments
   );
-
 
 $("date")
   .addEventListener(
@@ -1479,15 +1474,16 @@ $("date")
   .addEventListener(
     "change",
     () => {
+
       $("date")
         .closest(".date-input-wrap")
         .classList.toggle(
           "has-value",
           !!$("date").value
         );
+
     }
   );
-
 
 $("status")
   .addEventListener(
@@ -1495,13 +1491,11 @@ $("status")
     loadAppointments
   );
 
-
 $("search")
   .addEventListener(
     "input",
     render
   );
-
 
 $("password")
   .addEventListener(
@@ -1513,7 +1507,6 @@ $("password")
 
     }
   );
-
 
 loadMember();
 
