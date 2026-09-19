@@ -1582,7 +1582,46 @@ async function loadMember() {
     salon.salon_name ||
     "Castelle Express CEO";
 
+  /* FILTRO INICIAL: HOJE */
+
+  setTodayFilter();
+
   await loadAppointments();
+
+}
+
+/* FILTRO INICIAL: HOJE */
+
+function setTodayFilter() {
+
+  const today =
+    new Date();
+
+  const year =
+    today.getFullYear();
+
+  const month =
+    String(
+      today.getMonth() + 1
+    ).padStart(2, "0");
+
+  const day =
+    String(
+      today.getDate()
+    ).padStart(2, "0");
+
+  const todayString =
+    `${year}-${month}-${day}`;
+
+  $("date").value =
+    todayString;
+
+  $("date")
+    .closest(
+      ".date-input-wrap"
+    )
+    .classList
+    .add("has-value");
 
 }
 
