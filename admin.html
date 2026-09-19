@@ -1945,4 +1945,294 @@ function render(source = appointments) {
               ?
 
               `
-             
+              <button
+                class="confirm"
+                onclick="changeStatus('${a.id}','confirmed')"
+              >
+                ✓ Confirmar
+              </button>
+              `
+
+              :
+
+              ""
+            }
+
+            ${
+              a.status !== "cancelled"
+
+              ?
+
+              `
+              <button
+                class="cancel"
+                onclick="changeStatus('${a.id}','cancelled')"
+              >
+                Cancelar
+              </button>
+              `
+
+              :
+
+              ""
+            }
+
+            ${
+              a.status === "cancelled"
+
+              ?
+
+              `
+              <button
+                class="reopen"
+                onclick="changeStatus('${a.id}','pending')"
+              >
+                Reabrir
+              </button>
+              `
+
+              :
+
+              ""
+            }
+
+            ${
+              a.customer_phone
+
+              ?
+
+              `
+              <button
+                class="reopen"
+                onclick="whatsapp('${escapeAttr(a.customer_phone)}')"
+              >
+                WhatsApp
+              </button>
+              `
+
+              :
+
+              ""
+            }
+
+          </div>
+
+        </div>
+
+      `)
+      .join("");
+
+}
+
+/* ESCAPAR HTML */
+
+function escapeHtml(value) {
+
+  return String(value)
+    .replace(
+      /[&<>"']/g,
+
+      c => ({
+
+        "&":
+          "&amp;",
+
+        "<":
+          "&lt;",
+
+        ">":
+          "&gt;",
+
+        '"':
+          "&quot;",
+
+        "'":
+          "&#039;"
+
+      }[c])
+    );
+
+}
+
+/* ESCAPAR ATRIBUTO */
+
+function escapeAttr(value) {
+
+  return String(value)
+    .replace(
+      /'/g,
+      "\\'"
+    );
+
+}
+
+/* ALTERAR STATUS */
+
+async function changeStatus(
+  id,
+  status
+) {
+
+  const {
+
+    data,
+
+    error
+
+  } = await db.rpc(
+    "update_my_salon_appointment_status",
+
+    {
+
+      p_appointment_id:
+        id,
+
+      p_status:
+        status
+
+    }
+  );
+
+  if (
+    error ||
+    data !== true
+  ) {
+
+    console.error(
+      "Erro ao alterar agendamento:",
+      error
+    );
+
+    alert(
+      "Não foi possível alterar o agendamento."
+    );
+
+    return;
+
+  }
+
+  await loadAppointments();
+
+}
+
+/* LOGOUT */
+
+async function logout() {
+
+  await db.auth.signOut();
+
+  showLogin();
+
+}
+
+/* MOSTRAR LOGIN */
+
+function showLogin() {
+
+  member = null;
+
+  appointments = [];
+
+  $("dashboard")
+    .classList
+    .add("hidden");
+
+  $("noAccess")
+    .classList
+    .add("hidden");
+
+  $("loginBox")
+    .classList
+    .remove("hidden");
+
+  $("logoutBtn")
+    .classList
+    .add("hidden");
+
+}
+
+/* EVENTOS */
+
+$("loginBtn")
+  .addEventListener(
+    "click",
+    login
+  );
+
+$("logoutBtn")
+  .addEventListener(
+    "click",
+    logout
+  );
+
+$("logoutNoAccess")
+  .addEventListener(
+    "click",
+    logout
+  );
+
+$("refreshBtn")
+  .addEventListener(
+    "click",
+    loadAppointments
+  );
+
+$("date")
+  .addEventListener(
+    "change",
+    () => {
+
+      $("date")
+        .closest(
+          ".date-input-wrap"
+        )
+        .classList.toggle(
+          "has-value",
+          !!$("date").value
+        );
+
+      applyFilters();
+
+    }
+  );
+
+$("status")
+  .addEventListener(
+    "change",
+    applyFilters
+  );
+
+$("search")
+  .addEventListener(
+    "input",
+    () => {
+
+      applyFilters();
+
+    }
+  );
+
+$("password")
+  .addEventListener(
+    "keydown",
+    e => {
+
+      if (
+        e.key === "Enter"
+      ) {
+
+        login();
+
+      }
+
+    }
+  );
+
+/* INICIAR */
+
+loadMember();
+
+</script>
+
+</body>
+</html>
