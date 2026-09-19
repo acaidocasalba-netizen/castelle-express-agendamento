@@ -528,6 +528,25 @@ select:focus {
   border-top: 1px solid #f0ebe6;
 }
 
+.actions button {
+  flex: 1;
+  min-height: 46px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 750;
+  letter-spacing: .1px;
+  border: 1px solid transparent;
+  transition: .2s ease;
+}
+
+.actions button:hover {
+  transform: translateY(-1px);
+}
+
+.actions button:active {
+  transform: translateY(0);
+}
+
 .confirm {
   background: var(--green-bg);
   color: var(--green);
