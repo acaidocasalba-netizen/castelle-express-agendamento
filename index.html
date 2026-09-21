@@ -780,14 +780,9 @@
 
         <p id="successText"></p>
 
-        <a
-          class="btn"
-          id="whatsapp"
-          target="_blank"
-          rel="noopener"
-        >
-          Enviar confirmação pelo WhatsApp
-        </a>
+       <div class="whatsapp-note">
+  A confirmação pelo WhatsApp ficará disponível após o cadastro do contato oficial do salão.
+</div>
 
       </div>
 
@@ -1456,11 +1451,11 @@ form.addEventListener(
 
       );
 
-
-    document
-      .getElementById("whatsapp")
-      .href =
-      `https://wa.me/5571999999999?text=${mensagem}`;
+ document
+  .getElementById("whatsapp")
+  .href =
+  `https://wa.me/5571999999999?text=${mensagem}`;
+    
 
   }
 );
