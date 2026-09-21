@@ -938,6 +938,128 @@ select:focus {
     flex-wrap: wrap;
   }
 }
+/* GESTÃO DE PROFISSIONAIS */
+
+.professionals-panel{
+  margin-bottom:20px;
+  padding:22px;
+}
+
+.professional-form{
+  display:grid;
+  gap:16px;
+}
+
+.professional-form label{
+  display:block;
+  margin-bottom:7px;
+  font-size:12px;
+  font-weight:800;
+  color:#5f554d;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+
+.professional-form input,
+.professional-form select{
+  width:100%;
+  min-height:48px;
+  padding:12px 14px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#fff;
+  color:#2f2b28;
+  font-size:15px;
+  box-sizing:border-box;
+}
+
+.professional-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.professional-actions button{
+  min-height:44px;
+  padding:10px 18px;
+  border:0;
+  border-radius:12px;
+  background:#2f2b28;
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.professional-actions button.secondary{
+  background:var(--soft);
+  color:#5f554d;
+}
+
+.professional-actions button.danger{
+  background:#f1dcd9;
+  color:#7b4038;
+}
+
+.professional-list{
+  display:grid;
+  gap:10px;
+  margin-top:20px;
+}
+
+.professional-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  padding:14px 16px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fff;
+}
+
+.professional-item strong{
+  display:block;
+  font-size:15px;
+}
+
+.professional-item small{
+  display:block;
+  margin-top:4px;
+  color:var(--muted);
+}
+
+.professional-status{
+  font-size:11px;
+  font-weight:800;
+  text-transform:uppercase;
+}
+
+.professional-status.active{
+  color:#55745c;
+}
+
+.professional-status.inactive{
+  color:#8a625d;
+}
+
+@media (max-width:750px){
+  .professionals-panel{
+    padding:18px;
+  }
+
+  .professional-item{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .professional-actions{
+    width:100%;
+  }
+
+  .professional-actions button{
+    flex:1;
+  }
+}
 /* EMPTY */
 
 .empty {
@@ -1260,6 +1382,76 @@ select:focus {
     ></span>
 
   </div>
+
+</div>
+    <!-- GESTÃO DE PROFISSIONAIS -->
+
+<div class="panel professionals-panel">
+
+  <div class="schedule-header">
+
+    <div>
+      <div class="schedule-title">
+        Gestão de profissionais
+      </div>
+
+      <div class="schedule-subtitle">
+        Cadastre, edite ou desative profissionais do salão.
+      </div>
+    </div>
+
+  </div>
+
+  <div class="professional-form">
+
+    <input
+      type="hidden"
+      id="professionalId"
+    >
+
+    <div>
+      <label for="professionalName">
+        NOME DA PROFISSIONAL
+      </label>
+
+      <input
+        id="professionalName"
+        type="text"
+        placeholder="Ex.: Ana"
+      >
+    </div>
+
+    <div class="professional-form-actions">
+
+      <button
+        id="saveProfessionalBtn"
+        class="schedule-save"
+        type="button"
+      >
+        Adicionar profissional
+      </button>
+
+      <button
+        id="cancelProfessionalEditBtn"
+        type="button"
+        hidden
+      >
+        Cancelar edição
+      </button>
+
+    </div>
+
+  </div>
+
+  <div
+    id="professionalMessage"
+    class="schedule-message"
+  ></div>
+
+  <div
+    id="professionalsList"
+    class="professionals-list"
+  ></div>
 
 </div>
     <!-- RESUMO DO DIA -->
