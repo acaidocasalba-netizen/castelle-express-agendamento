@@ -1088,7 +1088,7 @@ function atualizarResumo(){
 }
 
 
-function gerarHorarios(){
+async function gerarHorarios(){
 
   slotsEl.innerHTML = "";
   selectedSlot = "";
@@ -1192,7 +1192,28 @@ const hoje = [
 const minutosAgora =
   agora.getHours() * 60 +
   agora.getMinutes();
+  const { data: reservas, error: reservasError } =
+    await db.rpc(
+      "get_public_booked_slots",
+      {
+        p_professional_id: Number(professional.id),
+        p_appointment_date: dateEl.value
+      }
+    );
 
+  if(reservasError){
+    console.error(reservasError);
+
+    slotsEl.innerHTML =
+      '<span class="hint">Não foi possível verificar os horários disponíveis. Atualize a página.</span>';
+
+    atualizarResumo();
+
+    return;
+  }
+
+  const horariosReservados =
+    reservas || [];
 for(
   let horario = inicio;
   horario + duracao <= fim;
@@ -1205,6 +1226,29 @@ for(
   ){
     continue;
   }
+      const fimHorario =
+      horario + duracao;
+
+    const horarioOcupado =
+      horariosReservados.some(reserva => {
+
+        const inicioReserva =
+          minutos(reserva.starts_at);
+
+        const fimReserva =
+          inicioReserva +
+          Number(reserva.duration_minutes);
+
+        return (
+          horario < fimReserva &&
+          fimHorario > inicioReserva
+        );
+
+      });
+
+    if(horarioOcupado){
+      continue;
+    }
 
   const botao =
     document.createElement("button");
