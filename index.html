@@ -1181,14 +1181,33 @@ function gerarHorarios(){
   let quantidade = 0;
 
 
-  for(
-    let horario = inicio;
-    horario + duracao <= fim;
-    horario += 30
-  ){
+  const agora = new Date();
 
-    const botao =
-      document.createElement("button");
+const hoje = [
+  agora.getFullYear(),
+  String(agora.getMonth() + 1).padStart(2,"0"),
+  String(agora.getDate()).padStart(2,"0")
+].join("-");
+
+const minutosAgora =
+  agora.getHours() * 60 +
+  agora.getMinutes();
+
+for(
+  let horario = inicio;
+  horario + duracao <= fim;
+  horario += 30
+){
+
+  if(
+    dateEl.value === hoje &&
+    horario <= minutosAgora
+  ){
+    continue;
+  }
+
+  const botao =
+    document.createElement("button");
 
 
     botao.type =
