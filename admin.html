@@ -2952,6 +2952,286 @@ $("password")
     }
   );
 
+  /* GESTÃO DE PROFISSIONAIS */
+
+let professionalsData = [];
+
+async function getSalonIdForProfessionals() {
+  const { data, error } = await supabase.rpc("get_my_salon_membership");
+
+  if (error) {
+    console.error(error);
+    throw new Error("Não foi possível identificar o salão.");
+  }
+
+  return data?.salon_id || data?.[0]?.salon_id;
+}
+
+function escapeProfessionalHtml(text) {
+  return String(text ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+async function loadProfessionals() {
+  const list = $("professionalList");
+
+  if (!list) return;
+
+  list.innerHTML = "<div class='empty'>Carregando profissionais...</div>";
+
+  try {
+    const salonId = await getSalonIdForProfessionals();
+
+    const { data, error } = await supabase
+      .from("professionals")
+      .select("id, name, active")
+      .eq("salon_id", salonId)
+      .order("name", { ascending: true });
+
+    if (error) throw error;
+
+    professionalsData = data || [];
+
+    renderProfessionals();
+  } catch (error) {
+    console.error(error);
+
+    list.innerHTML =
+      "<div class='empty'>Erro ao carregar profissionais.</div>";
+  }
+}
+
+function renderProfessionals() {
+  const list = $("professionalList");
+
+  if (!list) return;
+
+  if (!professionalsData.length) {
+    list.innerHTML =
+      "<div class='empty'>Nenhuma profissional cadastrada.</div>";
+    return;
+  }
+
+  list.innerHTML = professionalsData.map(function(professional) {
+    const statusClass = professional.active
+      ? "active"
+      : "inactive";
+
+    const statusText = professional.active
+      ? "Ativa"
+      : "Inativa";
+
+    const buttonClass = professional.active
+      ? "danger"
+      : "secondary";
+
+    const buttonText = professional.active
+      ? "Desativar"
+      : "Ativar";
+
+    return `
+      <div class="professional-item">
+        <div>
+          <strong>${escapeProfessionalHtml(professional.name)}</strong>
+
+          <small class="professional-status ${statusClass}">
+            ${statusText}
+          </small>
+        </div>
+
+        <div class="professional-actions">
+          <button
+            type="button"
+            class="secondary"
+            onclick="editProfessional('${professional.id}')"
+          >
+            Editar
+          </button>
+
+          <button
+            type="button"
+            class="${buttonClass}"
+            onclick="toggleProfessional('${professional.id}', ${professional.active})"
+          >
+            ${buttonText}
+          </button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function editProfessional(id) {
+  const professional = professionalsData.find(function(item) {
+    return item.id === id;
+  });
+
+  if (!professional) return;
+
+  $("professionalId").value = professional.id;
+  $("professionalName").value = professional.name;
+
+  const button = $("saveProfessionalBtn");
+
+  if (button) {
+    button.textContent = "Salvar alterações";
+  }
+
+  const cancelButton = $("cancelProfessionalBtn");
+
+  if (cancelButton) {
+    cancelButton.style.display = "inline-flex";
+  }
+
+  $("professionalName").focus();
+}
+
+function clearProfessionalForm() {
+  $("professionalId").value = "";
+  $("professionalName").value = "";
+
+  const button = $("saveProfessionalBtn");
+
+  if (button) {
+    button.textContent = "Adicionar profissional";
+  }
+
+  const cancelButton = $("cancelProfessionalBtn");
+
+  if (cancelButton) {
+    cancelButton.style.display = "none";
+  }
+}
+
+async function saveProfessional() {
+  const name = $("professionalName").value.trim();
+  const id = $("professionalId").value;
+
+  if (!name) {
+    alert("Informe o nome da profissional.");
+    $("professionalName").focus();
+    return;
+  }
+
+  try {
+    const salonId = await getSalonIdForProfessionals();
+
+    if (id) {
+      const { error } = await supabase
+        .from("professionals")
+        .update({
+          name: name
+        })
+        .eq("id", id)
+        .eq("salon_id", salonId);
+
+      if (error) throw error;
+
+      alert("Profissional atualizada com sucesso.");
+    } else {
+      const { error } = await supabase
+        .from("professionals")
+        .insert({
+          salon_id: salonId,
+          name: name,
+          active: true
+        });
+
+      if (error) throw error;
+
+      alert("Profissional adicionada com sucesso.");
+    }
+
+    clearProfessionalForm();
+    await loadProfessionals();
+
+    if (typeof loadSchedule === "function") {
+      await loadSchedule();
+    }
+
+  } catch (error) {
+    console.error(error);
+
+    alert(
+      "Não foi possível salvar a profissional. Verifique o console."
+    );
+  }
+}
+
+async function toggleProfessional(id, currentActive) {
+  const professional = professionalsData.find(function(item) {
+    return item.id === id;
+  });
+
+  if (!professional) return;
+
+  const action = currentActive
+    ? "desativar"
+    : "ativar";
+
+  const confirmed = confirm(
+    `Deseja ${action} a profissional "${professional.name}"?`
+  );
+
+  if (!confirmed) return;
+
+  try {
+    const salonId = await getSalonIdForProfessionals();
+
+    const { error } = await supabase
+      .from("professionals")
+      .update({
+        active: !currentActive
+      })
+      .eq("id", id)
+      .eq("salon_id", salonId);
+
+    if (error) throw error;
+
+    await loadProfessionals();
+
+    if (typeof loadSchedule === "function") {
+      await loadSchedule();
+    }
+
+    alert(
+      currentActive
+        ? "Profissional desativada."
+        : "Profissional ativada."
+    );
+
+  } catch (error) {
+    console.error(error);
+
+    alert(
+      "Não foi possível alterar o status da profissional."
+    );
+  }
+}
+
+
+/* EVENTOS DA GESTÃO DE PROFISSIONAIS */
+
+if ($("saveProfessionalBtn")) {
+  $("saveProfessionalBtn").addEventListener(
+    "click",
+    saveProfessional
+  );
+}
+
+if ($("cancelProfessionalBtn")) {
+  $("cancelProfessionalBtn").addEventListener(
+    "click",
+    clearProfessionalForm
+  );
+}
+
+loadProfessionals();
+
 /* INICIAR */
 $("saveScheduleBtn").addEventListener(
   "click",
