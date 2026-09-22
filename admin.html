@@ -3051,7 +3051,8 @@ function renderProfessionals() {
           <button
             type="button"
             class="secondary"
-            onclick="editProfessional('${professional.id}')"
+            data-professional-action="edit"
+            data-professional-id="${professional.id}"
           >
             Editar
           </button>
@@ -3059,7 +3060,9 @@ function renderProfessionals() {
           <button
             type="button"
             class="${buttonClass}"
-            onclick="toggleProfessional('${professional.id}', ${professional.active})"
+            data-professional-action="toggle"
+            data-professional-id="${professional.id}"
+            data-current-active="${professional.active}"
           >
             ${buttonText}
           </button>
@@ -3231,6 +3234,33 @@ if ($("cancelProfessionalEditBtn")) {
   $("cancelProfessionalEditBtn").addEventListener(
     "click",
     clearProfessionalForm
+  );
+}
+
+if ($("professionalsList")) {
+  $("professionalsList").addEventListener(
+    "click",
+    function(event) {
+      const button = event.target.closest(
+        "button[data-professional-action]"
+      );
+
+      if (!button || !this.contains(button)) return;
+
+      const { professionalAction, professionalId, currentActive } =
+        button.dataset;
+
+      if (professionalAction === "edit") {
+        editProfessional(professionalId);
+      }
+
+      if (professionalAction === "toggle") {
+        toggleProfessional(
+          professionalId,
+          currentActive === "true"
+        );
+      }
+    }
   );
 }
 
