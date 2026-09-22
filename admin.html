@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+n<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -3074,7 +3074,7 @@ function renderProfessionals() {
 
 function editProfessional(id) {
   const professional = professionalsData.find(function(item) {
-    return item.id === id;
+   return String(item.id) === String(id);
   });
 
   if (!professional) return;
@@ -3171,7 +3171,7 @@ async function saveProfessional() {
 
 async function toggleProfessional(id, currentActive) {
   const professional = professionalsData.find(function(item) {
-    return item.id === id;
+    return String(item.id) === String(id);
   });
 
   if (!professional) return;
