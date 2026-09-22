@@ -2957,6 +2957,10 @@ $("password")
 let professionalsData = [];
 
 async function getSalonIdForProfessionals() {
+  if (member?.salon_id) {
+    return member.salon_id;
+  }
+
   const { data, error } = await db.rpc("get_my_salon_membership");
 
   if (error) {
